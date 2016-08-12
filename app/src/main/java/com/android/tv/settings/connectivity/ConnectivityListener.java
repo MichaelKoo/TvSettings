@@ -59,7 +59,7 @@ public class ConnectivityListener {
     }
 
     private static final String TAG = "ConnectivityListener";
-    private static final boolean DEBUG = false;
+    private static final boolean DEBUG = true;
 
     class WifiReceiver extends BroadcastReceiver {
         public void onReceive(Context context, Intent intent) {
@@ -130,7 +130,7 @@ public class ConnectivityListener {
             @Override
             public void onReceive(Context context, Intent intent) {
                 if (DEBUG) {
-                    Log.d(TAG, "Connectivity change!");
+                    Log.d(TAG, "Connectivity change! "+intent.getAction());
                 }
                 if (updateConnectivityStatus()) {
                     mListener.onConnectivityChange(intent);

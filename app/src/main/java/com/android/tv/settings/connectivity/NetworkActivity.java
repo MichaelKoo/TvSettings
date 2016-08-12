@@ -65,7 +65,7 @@ public class NetworkActivity extends SettingsLayoutActivity implements
     private static final int REQUEST_CODE_ADVANCED_OPTIONS = 1;
     // MStar Android Patch Begin
     private static final int REQUEST_CODE_WIFI_ENABLE = 2;
-    private static final int WIFI_REFRESH_INTERVAL_CAP_MILLIS = 10 * 1000;
+    private static final int WIFI_REFRESH_INTERVAL_CAP_MILLIS = 5 * 1000;
     // MStar Android Patch End
 
     private ConnectivityListener mConnectivityListener;
@@ -364,7 +364,7 @@ public class NetworkActivity extends SettingsLayoutActivity implements
             ConnectivityListener.ConnectivityStatus status =
                     mConnectivityListener.getConnectivityStatus();
             boolean isConnected = status.isWifiConnected();
-            if (isConnected) {
+            if (isConnected) {//wifi connect
                 layout
                     .add(new Status.Builder(mRes)
                             .title(R.string.title_internet_connection)
@@ -443,6 +443,11 @@ public class NetworkActivity extends SettingsLayoutActivity implements
         }
     };
 
+    /**WLAN ITEM
+     *
+     * @param layout
+     * @param SSID
+     */
     private void addWifiConnectedHeader(Layout layout, String SSID) {
         layout
             .add(new Header.Builder(mRes)
@@ -507,6 +512,7 @@ public class NetworkActivity extends SettingsLayoutActivity implements
             long now = SystemClock.elapsedRealtime();
             long millisToNextRefreshView =
                     WIFI_REFRESH_INTERVAL_CAP_MILLIS - now + mLastWifiRefresh;
+            System.out.println("onWifiListChanged NextRefreshView"+millisToNextRefreshView);
             mHandler.removeCallbacks(mRefreshViewRunnable);
             mHandler.postDelayed(mRefreshViewRunnable, millisToNextRefreshView);
         }

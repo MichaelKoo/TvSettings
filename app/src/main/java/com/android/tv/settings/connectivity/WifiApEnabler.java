@@ -168,8 +168,10 @@ public class WifiApEnabler {
             mSwitch.setEnabled(false);
         }
     }
+    public boolean isInOperation=false;
 
     public void setSoftapEnabled(boolean enable) {
+        isInOperation=true;
         final ContentResolver cr = mContext.getContentResolver();
         /**
          * Disable Wifi if enabling tethering
@@ -203,6 +205,7 @@ public class WifiApEnabler {
                 Settings.Global.putInt(cr, Settings.Global.WIFI_SAVED_STATE, 0);
             }
         }
+        isInOperation=false;
     }
 
     public void updateConfigSummary(WifiConfiguration wifiConfig) {

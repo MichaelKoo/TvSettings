@@ -105,6 +105,7 @@ import android.preference.Preference;
 import android.preference.PreferenceScreen;
 import android.preference.SwitchPreference;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.webkit.WebView;
@@ -227,8 +228,8 @@ public class TetherSettings extends SettingsPreferenceFragment
         if (wifiAvailable && !ActivityManager.isUserAMonkey()) {
             mWifiApEnabler = new WifiApEnabler(activity, mEnableWifiAp);
             initWifiTethering();
-        } else {
-            getPreferenceScreen().removePreference(mEnableWifiAp);
+        } else {//MichaelKoo 20160813
+//            getPreferenceScreen().removePreference(mEnableWifiAp);
             getPreferenceScreen().removePreference(wifiApSettings);
         }
 
@@ -526,14 +527,29 @@ public class TetherSettings extends SettingsPreferenceFragment
 
     public boolean onPreferenceChange(Preference preference, Object value) {
         boolean enable = (Boolean) value;
-
+        Log.i(TAG,"is Enable ="+enable+", in operation="+mWifiApEnabler.isInOperation);
         if (enable) {
             startProvisioningIfNecessary(WIFI_TETHERING);
         } else {
-            mWifiApEnabler.setSoftapEnabled(false);
+//            mWifiApEnabler.setSoftapEnabled(false);
+            mHandler.post(new HandleRunnable(false,mWifiApEnabler));
         }
         return false;
     }
+    static class HandleRunnable implements Runnable{
+        WifiApEnabler mWifiApEnabler;
+        boolean mEnable=false;
+        HandleRunnable(boolean enable,WifiApEnabler enabler){
+            mEnable=enable;
+            mWifiApEnabler=enabler;
+        }
+        @Override
+        public void run() {
+            mWifiApEnabler.setSoftapEnabled(mEnable);
+        }
+    }
+
+    private final android.os.Handler mHandler=new android.os.Handler();
 
     public static boolean isProvisioningNeededButUnavailable(Context context) {
         String[] provisionApp = context.getResources().getStringArray(
@@ -565,6 +581,7 @@ public class TetherSettings extends SettingsPreferenceFragment
 
     private void startProvisioningIfNecessary(int choice) {
         mTetherChoice = choice;
+        Log.i(TAG,"provision app="+mProvisionApp);
         if (isProvisioningNeeded(mProvisionApp)) {
             Intent intent = new Intent(Intent.ACTION_MAIN);
             intent.setClassName(mProvisionApp[0], mProvisionApp[1]);
@@ -599,7 +616,8 @@ public class TetherSettings extends SettingsPreferenceFragment
     private void startTethering() {
         switch (mTetherChoice) {
             case WIFI_TETHERING:
-                mWifiApEnabler.setSoftapEnabled(true);
+//                mWifiApEnabler.setSoftapEnabled(true);//MichaelKoo 2016-08-13
+                mHandler.post(new HandleRunnable(true,mWifiApEnabler));
                 break;
             case BLUETOOTH_TETHERING:
                 // turn on Bluetooth first

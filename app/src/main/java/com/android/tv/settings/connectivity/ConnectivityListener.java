@@ -125,7 +125,12 @@ public class ConnectivityListener {
         mFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
         mFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION_IMMEDIATE);
         mFilter.addAction(ConnectivityManager.INET_CONDITION_ACTION);
+        mFilter.addAction(ConnectivityManager.ACTION_DATA_ACTIVITY_CHANGE);
+        mFilter.addAction(ConnectivityManager.ACTION_TETHER_STATE_CHANGED);
+
         mFilter.addAction(WifiManager.RSSI_CHANGED_ACTION);
+
+
         mReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
@@ -354,9 +359,12 @@ public class ConnectivityListener {
 
     private boolean updateConnectivityStatus() {
         NetworkInfo networkInfo = mConnectivityManager.getActiveNetworkInfo();
+        Log.d(TAG,"network info ="+networkInfo+",listener="+mListener);
         if (networkInfo == null) {
             return setNetworkType(ConnectivityStatus.NETWORK_NONE);
         } else {
+            Log.d(TAG,"network type="+networkInfo.getType()+",type name="+networkInfo.getTypeName());
+
             switch (networkInfo.getType()) {
                 case ConnectivityManager.TYPE_WIFI: {
                     boolean hasChanged;

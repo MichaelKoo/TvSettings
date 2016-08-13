@@ -1,7 +1,6 @@
 # TvSettings
-<br/>
-    <h2>ogging for work</h2>
-<br/>
+#Logging for work
+
 <h3>网络模块</h3>
 &nbsp;&nbsp;1.初始化wifi监听类，并开始监听WiFi；<br/>
 &nbsp;&nbsp;2.初始化PPPOE监听；<br/>
@@ -11,7 +10,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;3.3 添加网络更改的监听会更合适(network change)<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;3.4 显示布局并扫描无线网络，显示扫描到网络(记录网络类型)<br/>
 <h3>类文件说明</h3>
-    Layout.java<br/>
+    Layout类<br/>
         <ul>
             <li>Node,LayoutRow,</li>
             <li>有刷新，有get，DrawableGetter,StringGetter </li>
@@ -24,13 +23,13 @@
         <li>createLayout()，此类没有显示，留给具体的子类实现，如：NetworkActivity.java</li>
         <li></li>
     </ul>
-    WifiConnectionActivity.java <br/>
+    WifiConnectionActivity类<br/>
     <ul>
         <li>createIntent()生成回调的Intent</li>
         <li>onPageComplete() -->CONNECT-->RESULT_ETHERNET_CONNECTED</li>
         <li>WifiMultiPagedFormActivity.java -->addPage()</li>
     </ul>
-    ConnectivityListener.java<br/>
+    ConnectivityListener类<br/>
     <p>
         在监听器中添加两个动作：<br/>
         ConnectivityManager.ACTION_DATA_ACTIVITY_CHANGE,<br/>
@@ -47,7 +46,7 @@
 
 <h3>网络热点</h3>
 <p>
-    宿主界面类：TetherSettingsActivity.java<br/>
-    主要实现界面类：TetherSettings.java <br/>
-    热点设置信息实现类：WifiApDialog.java
+    宿主界面类：TetherSettingsActivity类<br/>
+    主要实现界面类：TetherSettings类 <br/>
+    热点设置信息实现类：WifiApDialog类
 </p>

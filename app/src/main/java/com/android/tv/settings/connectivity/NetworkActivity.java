@@ -129,11 +129,13 @@ public class NetworkActivity extends SettingsLayoutActivity implements
 
     @Override
     protected void onDestroy(){
-        super.onDestroy();
+
         mConnectivityListener.stop();
         // MStar Android Patch Begin
         mPPPoEDialer.exit();
         // MStar Android Patch End
+
+        super.onDestroy();
     }
 
     @Override
@@ -175,6 +177,7 @@ public class NetworkActivity extends SettingsLayoutActivity implements
         }
         @Override
         public void refreshView() {
+            Log.i(TAG,"refreshView="+mConnectivityListener.getConnectivityStatus().isEthernetConnected()+",last="+lastIsEthernetConnected);
             if (mConnectivityListener.getConnectivityStatus().isEthernetConnected() !=
                     lastIsEthernetConnected) {
                 super.refreshView();
@@ -588,6 +591,7 @@ public class NetworkActivity extends SettingsLayoutActivity implements
                         if (isConnected) {
                             addWifiConnectedHeader(layout, network.SSID);
                         } else {
+                            System.out.println("Network current ssid="+network.SSID+",description:"+networkDescription+",dest:"+intent);
                             layout.add(new Action.Builder(mRes, intent)
                                     .title(network.SSID)
                                     .description(networkDescription).build());

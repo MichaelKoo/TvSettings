@@ -38,21 +38,17 @@
     <ul>
         <li>由NetworkActivity的onCreate()方法可知,Listener接口由NetworkActivity类实现了</li>
         <li>查看NetworkActivity的onConnectivityChange方法可知，具体的页面刷新是由布局Layout的具体实现类实现，刷新方法为实现类的refreshView()</li>
-        <li>查看以太网的mEthernetConnectedDescription的实现，这里的实现只有两个方法，其中一个就是刷新布局方法refreshView()，其中方法实现里面有mConnectivityListener.getConnectivityStatus().isEthernetConnected() !=lastIsEthernetConnected的判断，到这里就切换到ConnectivityListener中去查看</li>
+        <li>查看以太网的mEthernetConnectedDescription的实现，这里的实现只有两个方法，其中一个就是刷新布局方法refreshView()，<br/>其中方法实现里面有mConnectivityListener.getConnectivityStatus().isEthernetConnected() !=lastIsEthernetConnected的判断，到这里就切换到ConnectivityListener中去查看</li>
         <li>查看ConnectivityListener可知是updateConnectivityStatus判断并改变改变网络类型，而updateConnectivityStatus的实现则由ConnectivityManager.getActiveNetworkInfo()决定</li>
         <li>由updateConnectivityStatus可以决定后续的布局刷新，只要网络有改变，布局就会刷新</li>
     </ul>
 <h3>网络热点</h3>
 <p>
-<<<<<<< HEAD
     宿主界面类：TetherSettingsActivity.java<br/>
     主要实现界面类：TetherSettings.java <br/>
     热点设置信息实现类：WifiApDialog.java<br/>
     点击之后不可再点击，等操作完成后再恢复点击，TetherSettings.java ,onPreferenceChange()
-    
-=======
     宿主界面类：TetherSettingsActivity类<br/>
     主要实现界面类：TetherSettings类 <br/>
     热点设置信息实现类：WifiApDialog类
->>>>>>> d2605d58036dd57a4420e061e4d10bea78f9767b
 </p>

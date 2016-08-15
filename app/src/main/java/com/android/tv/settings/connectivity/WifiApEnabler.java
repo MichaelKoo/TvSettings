@@ -110,14 +110,18 @@ public class WifiApEnabler {
 
     ConnectivityManager mCm;
     private String[] mWifiRegexs;
+    static final String TAG="WifiApEnable";
 
     private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
+            Log.i(TAG,"action="+action);
+
             if (WifiManager.WIFI_AP_STATE_CHANGED_ACTION.equals(action)) {
                 handleWifiApStateChanged(intent.getIntExtra(
                         WifiManager.EXTRA_WIFI_AP_STATE, WifiManager.WIFI_AP_STATE_FAILED));
+
             } else if (ConnectivityManager.ACTION_TETHER_STATE_CHANGED.equals(action)) {
                 ArrayList<String> available = intent.getStringArrayListExtra(
                         ConnectivityManager.EXTRA_AVAILABLE_TETHER);
@@ -126,6 +130,7 @@ public class WifiApEnabler {
                 ArrayList<String> errored = intent.getStringArrayListExtra(
                         ConnectivityManager.EXTRA_ERRORED_TETHER);
                 updateTetherState(available.toArray(), active.toArray(), errored.toArray());
+
             } else if (Intent.ACTION_AIRPLANE_MODE_CHANGED.equals(action)) {
                 enableWifiSwitch();
             }
@@ -236,15 +241,23 @@ public class WifiApEnabler {
         if (wifiTethered) {
             WifiConfiguration wifiConfig = mWifiManager.getWifiApConfiguration();
             updateConfigSummary(wifiConfig);
-        } else if (wifiErrored) {
+//        } else if (wifiErrored) {
+        } else {
             mSwitch.setSummary(R.string.wifi_error);
         }
+
+    }
+    public void setSwitchSummary(boolean isStarting){
+        int resId=isStarting?R.string.wifi_tether_starting:R.string.wifi_tether_stopping;
+        mSwitch.setSummary(resId);
     }
 
     private void handleWifiApStateChanged(int state) {
+        Log.d(TAG,"state="+state);
         switch (state) {
             case WifiManager.WIFI_AP_STATE_ENABLING:
-                mSwitch.setSummary(R.string.wifi_tether_starting);
+//                mSwitch.setSummary(R.string.wifi_tether_starting);
+                setSwitchSummary(true);
                 mSwitch.setEnabled(false);
                 break;
             case WifiManager.WIFI_AP_STATE_ENABLED:
@@ -257,7 +270,8 @@ public class WifiApEnabler {
                 mSwitch.setEnabled(true);
                 break;
             case WifiManager.WIFI_AP_STATE_DISABLING:
-                mSwitch.setSummary(R.string.wifi_tether_stopping);
+//                mSwitch.setSummary(R.string.wifi_tether_stopping);
+                setSwitchSummary(false);
                 mSwitch.setEnabled(false);
                 break;
             case WifiManager.WIFI_AP_STATE_DISABLED:

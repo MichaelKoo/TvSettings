@@ -526,16 +526,29 @@ public class TetherSettings extends SettingsPreferenceFragment
     }
 
     public boolean onPreferenceChange(Preference preference, Object value) {
+
+        mEnableWifiAp.setEnabled(false);
         boolean enable = (Boolean) value;
+        mWifiApEnabler.setSwitchSummary(enable);
         Log.i(TAG,"is Enable ="+enable+", in operation="+mWifiApEnabler.isInOperation);
         if (enable) {
             startProvisioningIfNecessary(WIFI_TETHERING);
         } else {
 //            mWifiApEnabler.setSoftapEnabled(false);
-            mHandler.post(new HandleRunnable(false,mWifiApEnabler));
+            invokeHandlerRunnable(false);
         }
         return false;
     }
+    private void invokeHandlerRunnable(boolean isEnable){
+        if(mHandlerRunnabler!=null){
+            mHandler.removeCallbacks(mHandlerRunnabler);
+            mHandlerRunnabler=null;
+        }
+        mHandlerRunnabler=new HandleRunnable(isEnable,mWifiApEnabler);
+        mHandler.post(mHandlerRunnabler);
+    }
+
+    HandleRunnable mHandlerRunnabler;
     static class HandleRunnable implements Runnable{
         WifiApEnabler mWifiApEnabler;
         boolean mEnable=false;
@@ -581,12 +594,14 @@ public class TetherSettings extends SettingsPreferenceFragment
 
     private void startProvisioningIfNecessary(int choice) {
         mTetherChoice = choice;
-        Log.i(TAG,"provision app="+mProvisionApp);
+
         if (isProvisioningNeeded(mProvisionApp)) {
             Intent intent = new Intent(Intent.ACTION_MAIN);
             intent.setClassName(mProvisionApp[0], mProvisionApp[1]);
             intent.putExtra(TETHER_CHOICE, mTetherChoice);
             startActivityForResult(intent, PROVISION_REQUEST);
+
+            Log.i(TAG,"provision app="+intent);
         } else {
             startTethering();
         }
@@ -617,7 +632,7 @@ public class TetherSettings extends SettingsPreferenceFragment
         switch (mTetherChoice) {
             case WIFI_TETHERING:
 //                mWifiApEnabler.setSoftapEnabled(true);//MichaelKoo 2016-08-13
-                mHandler.post(new HandleRunnable(true,mWifiApEnabler));
+                invokeHandlerRunnable(true);
                 break;
             case BLUETOOTH_TETHERING:
                 // turn on Bluetooth first

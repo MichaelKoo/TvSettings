@@ -49,5 +49,7 @@
 <p>
     宿主界面类：TetherSettingsActivity.java<br/>
     主要实现界面类：TetherSettings.java <br/>
-    热点设置信息实现类：WifiApDialog.java
+    热点设置信息实现类：WifiApDialog.java<br/>
+    点击之后不可再点击，等操作完成后再恢复点击，TetherSettings.java ,onPreferenceChange()
+    
 </p>
